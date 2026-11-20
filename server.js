@@ -24,10 +24,15 @@ const users = new Map();
 const sessions = new Map();
 const blockedUsers = new Set();
 
+function validSessionId(id) {
+  return typeof id === "string" &&
+    /^[a-zA-Z0-9_-]{8,100}$/.test(id);
+}
+
 function cleanOldSessions() {
   const now = Date.now();
 
-  for (const [id, session] of sessions) {
+  for (const session of sessions.values()) {
     if (now - session.lastSeen > 45000) {
       session.online = false;
       session.sharing = false;
@@ -40,12 +45,8 @@ function cleanOldSessions() {
   }
 }
 
-function validSessionId(id) {
-  return typeof id === "string" && /^[a-zA-Z0-9_-]{8,100}$/.test(id);
-}
-
 async function verifyGoogleToken(token) {
-  if (!token) return null;
+  if (!token || !process.env.GOOGLE_CLIENT_ID) return null;
 
   try {
     const response = await fetch(
@@ -60,9 +61,7 @@ async function verifyGoogleToken(token) {
       data.aud !== process.env.GOOGLE_CLIENT_ID ||
       data.email_verified !== "true" ||
       !data.email
-    ) {
-      return null;
-    }
+    ) return null;
 
     return {
       email: data.email.toLowerCase(),
@@ -73,22 +72,23 @@ async function verifyGoogleToken(token) {
   }
 }
 
-async function requireOwner(req, res, next) {
-  const token = req.headers.authorization?.replace("Bearer ", "");
-  const user = await verifyGoogleToken(token);
-
-  if (!user || user.email !== OWNER_EMAIL) {
-    return res.status(403).json({ error: "Acesso exclusivo do dono." });
-  }
-
-  req.user = user;
-  next();
-}
-
 async function getRequestUser(req) {
   const token = req.headers.authorization?.replace("Bearer ", "");
   if (!token) return null;
   return verifyGoogleToken(token);
+}
+
+async function requireOwner(req, res, next) {
+  const user = await getRequestUser(req);
+
+  if (!user || user.email !== OWNER_EMAIL) {
+    return res.status(403).json({
+      error: "Acesso exclusivo do dono."
+    });
+  }
+
+  req.user = user;
+  next();
 }
 
 function updateSession(sessionId, user) {
@@ -110,13 +110,7 @@ function updateSession(sessionId, user) {
   if (user) {
     session.email = user.email;
     session.name = user.name;
-  }
 
-  session.online = true;
-  session.lastSeen = Date.now();
-  sessions.set(sessionId, session);
-
-  if (user) {
     users.set(user.email, {
       email: user.email,
       name: user.name,
@@ -124,6 +118,10 @@ function updateSession(sessionId, user) {
     });
   }
 
+  session.online = true;
+  session.lastSeen = Date.now();
+
+  sessions.set(sessionId, session);
   return session;
 }
 
@@ -136,11 +134,15 @@ app.post("/api/auth/google", async (req, res) => {
   const user = await verifyGoogleToken(req.body.credential);
 
   if (!user) {
-    return res.status(401).json({ error: "Login Google inválido." });
+    return res.status(401).json({
+      error: "Login Google inválido."
+    });
   }
 
   if (blockedUsers.has(user.email)) {
-    return res.status(403).json({ error: "Esta conta está bloqueada." });
+    return res.status(403).json({
+      error: "Esta conta está bloqueada."
+    });
   }
 
   if (validSessionId(req.body.sessionId)) {
@@ -155,20 +157,24 @@ app.post("/api/auth/google", async (req, res) => {
   });
 });
 
-// PRESENÇA: registra quem está usando o site
+// PRESENÇA
 app.post("/api/presence", async (req, res) => {
   cleanOldSessions();
 
   const { sessionId } = req.body;
 
   if (!validSessionId(sessionId)) {
-    return res.status(400).json({ error: "Sessão inválida." });
+    return res.status(400).json({
+      error: "Sessão inválida."
+    });
   }
 
   const user = await getRequestUser(req);
 
   if (user && blockedUsers.has(user.email)) {
-    return res.status(403).json({ error: "Sua conta está bloqueada." });
+    return res.status(403).json({
+      error: "Sua conta está bloqueada."
+    });
   }
 
   const existing = sessions.get(sessionId);
@@ -184,7 +190,7 @@ app.post("/api/presence", async (req, res) => {
   res.json({ success: true });
 });
 
-// CONFIGURAÇÕES
+// CONFIGURAÇÕES DO DONO
 app.get("/api/admin/settings", requireOwner, (req, res) => {
   res.json(settings);
 });
@@ -194,44 +200,50 @@ app.post("/api/admin/settings", requireOwner, (req, res) => {
     settings.resenhaEnabled = req.body.resenhaEnabled;
   }
 
-  res.json({ success: true, settings });
+  res.json({
+    success: true,
+    settings
+  });
 });
 
-// LISTA DE USUÁRIOS E SESSÕES
+// USUÁRIOS E SESSÕES
 app.get("/api/admin/users", requireOwner, (req, res) => {
   cleanOldSessions();
-
-  const onlineSessions = [...sessions.values()].map(session => ({
-    id: session.id,
-    email: session.email,
-    name: session.name,
-    online: session.online && !session.disconnected,
-    sharing: session.sharing,
-    lastSeen: session.lastSeen,
-    disconnected: !!session.disconnected
-  }));
 
   res.json({
     users: [...users.values()].map(user => ({
       ...user,
       blocked: blockedUsers.has(user.email)
     })),
-    sessions: onlineSessions
+
+    sessions: [...sessions.values()].map(session => ({
+      id: session.id,
+      email: session.email,
+      name: session.name,
+      online: session.online && !session.disconnected,
+      sharing: session.sharing,
+      lastSeen: session.lastSeen,
+      disconnected: !!session.disconnected
+    }))
   });
 });
 
-// DESCONECTAR UMA SESSÃO
+// DESCONECTAR SESSÃO
 app.post("/api/admin/sessions/disconnect", requireOwner, (req, res) => {
   const { sessionId } = req.body;
 
   if (!validSessionId(sessionId)) {
-    return res.status(400).json({ error: "Sessão inválida." });
+    return res.status(400).json({
+      error: "Sessão inválida."
+    });
   }
 
   const session = sessions.get(sessionId);
 
   if (!session) {
-    return res.status(404).json({ error: "Sessão não encontrada." });
+    return res.status(404).json({
+      error: "Sessão não encontrada."
+    });
   }
 
   session.disconnected = true;
@@ -242,7 +254,7 @@ app.post("/api/admin/sessions/disconnect", requireOwner, (req, res) => {
   res.json({ success: true });
 });
 
-// BLOQUEAR OU DESBLOQUEAR CONTA
+// BLOQUEAR CONTA
 app.post("/api/admin/users/block", requireOwner, (req, res) => {
   const email = String(req.body.email || "").toLowerCase();
 
@@ -270,18 +282,23 @@ app.post("/api/admin/users/block", requireOwner, (req, res) => {
   res.json({ success: true });
 });
 
-// USUÁRIO INICIA COMPARTILHAMENTO APÓS AUTORIZAR NO NAVEGADOR
+// COMPARTILHAMENTO DE TELA
+// O usuário precisa autorizar pelo navegador.
 app.post("/api/screen/start", (req, res) => {
   const { sessionId } = req.body;
 
   if (!validSessionId(sessionId)) {
-    return res.status(400).json({ error: "Sessão inválida." });
+    return res.status(400).json({
+      error: "Sessão inválida."
+    });
   }
 
   const session = sessions.get(sessionId);
 
   if (!session || session.disconnected) {
-    return res.status(403).json({ error: "Sessão indisponível." });
+    return res.status(403).json({
+      error: "Sessão indisponível."
+    });
   }
 
   session.sharing = true;
@@ -291,25 +308,30 @@ app.post("/api/screen/start", (req, res) => {
   res.json({ success: true });
 });
 
-// RECEBE IMAGENS DA TELA COMPARTILHADA
 app.post("/api/screen/frame", (req, res) => {
   const { sessionId, frame } = req.body;
 
   if (!validSessionId(sessionId) || typeof frame !== "string") {
-    return res.status(400).json({ error: "Dados inválidos." });
+    return res.status(400).json({
+      error: "Dados inválidos."
+    });
   }
 
   const session = sessions.get(sessionId);
 
   if (!session || session.disconnected || !session.sharing) {
-    return res.status(403).json({ error: "Compartilhamento não autorizado." });
+    return res.status(403).json({
+      error: "Compartilhamento não autorizado."
+    });
   }
 
   if (
     !frame.startsWith("data:image/jpeg;base64,") ||
     frame.length > 1500000
   ) {
-    return res.status(400).json({ error: "Imagem inválida ou muito grande." });
+    return res.status(400).json({
+      error: "Imagem inválida ou muito grande."
+    });
   }
 
   session.screenFrame = frame;
@@ -319,7 +341,7 @@ app.post("/api/screen/frame", (req, res) => {
   res.json({ success: true });
 });
 
-// DONO VISUALIZA SOMENTE TELAS COMPARTILHADAS
+// TELAS COMPARTILHADAS
 app.get("/api/admin/screens", requireOwner, (req, res) => {
   cleanOldSessions();
 
@@ -340,7 +362,6 @@ app.get("/api/admin/screens", requireOwner, (req, res) => {
   res.json({ screens });
 });
 
-// USUÁRIO PARA O COMPARTILHAMENTO
 app.post("/api/screen/stop", (req, res) => {
   const { sessionId } = req.body;
   const session = sessions.get(sessionId);
@@ -354,14 +375,17 @@ app.post("/api/screen/stop", (req, res) => {
   res.json({ success: true });
 });
 
-// CHAT
+// CHAT DA PICA PAU IA
 app.post("/api/chat", async (req, res) => {
   try {
     const { message, messages, mode, sessionId } = req.body;
+
     const user = await getRequestUser(req);
 
     if (user && blockedUsers.has(user.email)) {
-      return res.status(403).json({ error: "Sua conta está bloqueada." });
+      return res.status(403).json({
+        error: "Sua conta está bloqueada."
+      });
     }
 
     if (validSessionId(sessionId)) {
@@ -382,40 +406,51 @@ app.post("/api/chat", async (req, res) => {
           ["user", "assistant"].includes(item.role) &&
           typeof item.content === "string"
         )
-      : [{ role: "user", content: String(message || "") }];
+      : [{
+          role: "user",
+          content: String(message || "")
+        }];
 
     if (!conversation.length) {
-      return res.status(400).json({ error: "Envie uma mensagem." });
+      return res.status(400).json({
+        error: "Envie uma mensagem."
+      });
     }
 
-    const resenhaAtiva = mode === "resenha" && settings.resenhaEnabled;
+    const resenhaAtiva =
+      mode === "resenha" && settings.resenhaEnabled;
 
     const systemPrompt = `
-Você é a EXUS IA, uma inteligência artificial inteligente, versátil e prestativa.
+Você é a Pica Pau IA, uma inteligência artificial inteligente,
+versátil, criativa e prestativa.
 
 REGRAS:
 - Responda em português brasileiro.
-- Ajude com programação, jogos, tecnologia, estudos, matemática e criatividade.
+- Ajude com programação, jogos, tecnologia, estudos,
+matemática e criatividade.
 - Explique de forma clara e completa.
 - Não invente informações.
 - Se não souber algo, admita.
-- Na identidade fictícia da EXUS IA, seu criador é Daleste.
-- Não ensine a assassinar pessoas nem a ocultar corpos ou encobrir crimes.
+- Não ensine a assassinar pessoas nem a ocultar crimes.
 
 PERSONALIDADE:
 ${resenhaAtiva ? `
 MODO RESENHA ATIVO:
-- Seja engraçado, descontraído e use gírias brasileiras naturalmente.
+- Seja engraçado e descontraído.
+- Use gírias brasileiras naturalmente.
 - Faça brincadeiras leves e amigáveis.
-- Use expressões como "farmando aura", "meteu essa?" e "calma, cria" quando combinarem.
 - Nunca humilhe o usuário.
 - Não deixe a brincadeira atrapalhar a resposta.
 ` : `
-Use seu estilo normal: inteligente, simpático, prestativo e direto.
-`}`;
+Use seu estilo normal: inteligente, simpático,
+prestativo e direto.
+`}
+`;
 
     if (!process.env.GROQ_API_KEY) {
-      return res.status(500).json({ error: "A chave GROQ_API_KEY não está configurada." });
+      return res.status(500).json({
+        error: "A chave GROQ_API_KEY não está configurada."
+      });
     }
 
     const apiResponse = await fetch(
@@ -429,7 +464,10 @@ Use seu estilo normal: inteligente, simpático, prestativo e direto.
         body: JSON.stringify({
           model: "openai/gpt-oss-20b",
           messages: [
-            { role: "system", content: systemPrompt },
+            {
+              role: "system",
+              content: systemPrompt
+            },
             ...conversation
           ]
         })
@@ -448,14 +486,20 @@ Use seu estilo normal: inteligente, simpático, prestativo e direto.
       data.choices?.[0]?.message?.content ||
       "Não consegui gerar uma resposta.";
 
-    res.json({ answer, reply: answer });
+    res.json({
+      answer,
+      reply: answer
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erro interno. Tente novamente." });
+    console.error("Erro no chat:", error);
+
+    res.status(500).json({
+      error: "Erro interno. Tente novamente."
+    });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`EXUS IA rodando na porta ${PORT}`);
+  console.log(`Pica Pau IA rodando na porta ${PORT}`);
 });
-      
