@@ -1,0 +1,181 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #09090f;
+  color: #f5f3ff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  min-height: 100vh;
+}
+
+aside {
+  width: 260px;
+  background: #101019;
+  border-right: 1px solid #242333;
+  padding: 25px;
+}
+
+.brand {
+  font-size: 27px;
+  font-weight: bold;
+  margin-bottom: 35px;
+}
+
+.brand span {
+  color: #a78bfa;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid #39334f;
+  background: #191625;
+  color: white;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+aside button {
+  width: 100%;
+}
+
+.muted {
+  color: #a78bfa;
+  font-size: 11px;
+  letter-spacing: 2px;
+  margin-top: 35px;
+}
+
+.hint {
+  color: #aaa5bb;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+small {
+  color: #777386;
+  display: block;
+  margin-top: 15px;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+header {
+  height: 65px;
+  border-bottom: 1px solid #242333;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px;
+  color: #a78bfa;
+}
+
+.mobile {
+  display: none;
+}
+
+#conversation {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+#welcome {
+  max-width: 700px;
+  margin: 90px auto;
+  text-align: center;
+}
+
+.star {
+  font-size: 45px;
+  color: #a78bfa;
+}
+
+h1 {
+  font-size: clamp(30px, 6vw, 48px);
+  margin-top: 20px;
+}
+
+h1 em {
+  color: #a78bfa;
+  font-style: normal;
+}
+
+.suggestions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+#chatForm {
+  padding: 20px;
+  max-width: 850px;
+  width: 100%;
+  margin: auto;
+}
+
+textarea {
+  width: 100%;
+  min-height: 65px;
+  resize: vertical;
+  padding: 20px;
+  background: #171522;
+  border: 1px solid #39334f;
+  border-radius: 15px;
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+#send {
+  background: #8b5cf6;
+  font-size: 22px;
+  margin-top: 10px;
+  width: 50px;
+}
+
+#messages {
+  max-width: 850px;
+  margin: auto;
+}
+
+.message {
+  padding: 16px;
+  margin: 12px 0;
+  border-radius: 14px;
+  background: #171522;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 650px) {
+  aside {
+    display: none;
+  }
+
+  header {
+    justify-content: space-between;
+  }
+
+  .mobile {
+    display: block;
+  }
+
+  #conversation {
+    padding: 15px;
+  }
+
+  #welcome {
+    margin: 65px auto;
+  }
+}
