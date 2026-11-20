@@ -4,31 +4,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090811">
-  <meta name="description" content="Pica Pau IA - Sua inteligência artificial.">
-  <title>Pica Pau IA</title>
+  <meta name="theme-color" content="#09070f">
+  <meta name="description" content="Pica Pau IA - Inteligência artificial para criar, aprender e transformar ideias.">
+  <title>Pica Pau IA — Inteligência sem limites</title>
   <link rel="stylesheet" href="/style.css">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
+
 <body>
   <div class="app-shell">
+
     <aside class="sidebar">
       <a class="brand" href="/">
         <div class="brand-mark">🐦</div>
-        <div class="brand-name">PICA PAU<span> IA</span><small>ARTIFICIAL INTELLIGENCE</small></div>
+        <div class="brand-name">
+          PICA PAU<span> IA</span>
+          <small>INTELLIGENCE SYSTEM</small>
+        </div>
       </a>
 
-      <button id="newChat" class="new-chat">＋ Nova conversa</button>
+      <button id="newChat" class="new-chat">
+        <span>＋</span> Nova conversa
+      </button>
 
       <div class="side-section">
-        <div class="section-label">ESPAÇO DE TRABALHO</div>
-        <div class="side-link active">✧ Assistente</div>
-        <div class="side-link">◷ Conversas recentes</div>
+        <div class="section-label">MENU PRINCIPAL</div>
+        <div class="side-link active">✧ <span>Assistente IA</span></div>
+        <div class="side-link">◷ <span>Conversas recentes</span></div>
       </div>
 
       <div class="history-area">
-        <div class="section-label">HISTÓRICO</div>
-        <div class="history-placeholder">Suas conversas aparecerão aqui.</div>
+        <div class="section-label">SEU HISTÓRICO</div>
+        <div class="history-placeholder">
+          <span>◷</span>
+          Suas conversas aparecerão aqui.
+        </div>
       </div>
 
       <div class="sidebar-footer">
@@ -36,21 +46,38 @@
           <div class="account-avatar">🐦</div>
           <div class="account-info">
             <strong>Pica Pau IA</strong>
-            <small>Assistente inteligente</small>
+            <small>Seu assistente pessoal</small>
           </div>
+          <span class="account-status"></span>
         </div>
+        <div class="sidebar-version">PICA PAU IA · V2.0</div>
       </div>
     </aside>
 
     <main class="main-panel">
+
       <header class="topbar">
-        <div class="mobile-brand">🐦 PICA PAU IA</div>
+        <div class="mobile-brand">
+          <span>🐦</span> PICA PAU IA
+        </div>
+
+        <div class="topbar-left">
+          <div class="page-indicator">
+            <span class="indicator-dot"></span>
+            Ambiente de inteligência artificial
+          </div>
+        </div>
+
         <div class="topbar-right">
-          <div class="online-status"><span></span> Sistemas online</div>
+          <div class="online-status">
+            <span></span> Sistemas online
+          </div>
+
           <div id="g_id_onload"
             data-client_id="150179960654-ds0g7ab1gbj71a53jpqpij4c5hr8bt3d.apps.googleusercontent.com"
             data-callback="handleGoogleLogin">
           </div>
+
           <div class="g_id_signin"
             data-type="standard"
             data-theme="filled_black"
@@ -62,31 +89,79 @@
       <div id="ownerStatus" class="owner-status"></div>
 
       <section id="conversation" class="conversation">
+
         <div id="welcome" class="welcome">
-          <div class="hero-orb">
-            <div class="orb-center">🐦</div>
+
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            SUA IA ESTÁ PRONTA
           </div>
 
-          <div class="eyebrow">BEM-VINDO À PICA PAU IA</div>
-          <h1>Grandes ideias<br>começam com <em>uma pergunta.</em></h1>
+          <div class="hero-orb">
+            <div class="orb-ring ring-one"></div>
+            <div class="orb-ring ring-two"></div>
+            <div class="orb-center">🐦</div>
+            <div class="orb-glow"></div>
+          </div>
+
+          <div class="eyebrow">
+            <span>✦</span> PICA PAU INTELLIGENCE
+          </div>
+
+          <h1>
+            O que vamos<br>
+            <em>criar hoje?</em>
+          </h1>
 
           <p class="welcome-description">
-            Sua inteligência artificial para explorar ideias, aprender, criar e transformar possibilidades em realidade.
+            Ideias, projetos, programação e criatividade.
+            Converse com sua inteligência artificial e transforme
+            qualquer ideia em realidade.
           </p>
 
+          <div class="suggestion-heading">
+            <span>EXPLORE AS POSSIBILIDADES</span>
+            <span class="suggestion-line"></span>
+          </div>
+
           <div class="suggestion-grid">
+
             <button class="suggestion-card" data-prompt="Me ajude a criar um jogo no Roblox Studio">
-              🎮 <span>Criar um jogo</span>
+              <div class="suggestion-icon">🎮</div>
+              <div class="suggestion-text">
+                <strong>Criar um jogo</strong>
+                <small>Desenvolva seu próximo projeto</small>
+              </div>
+              <span class="suggestion-arrow">↗</span>
             </button>
+
             <button class="suggestion-card" data-prompt="Crie um site moderno para mim">
-              ◇ <span>Desenvolver um site</span>
+              <div class="suggestion-icon">⌘</div>
+              <div class="suggestion-text">
+                <strong>Desenvolver um site</strong>
+                <small>Transforme ideias em páginas</small>
+              </div>
+              <span class="suggestion-arrow">↗</span>
             </button>
+
             <button class="suggestion-card" data-prompt="Me ensine programação do zero">
-              ⚡ <span>Aprender programação</span>
+              <div class="suggestion-icon">⚡</div>
+              <div class="suggestion-text">
+                <strong>Aprender programação</strong>
+                <small>Comece a programar hoje</small>
+              </div>
+              <span class="suggestion-arrow">↗</span>
             </button>
+
             <button class="suggestion-card" data-prompt="Me dê ideias criativas para um projeto">
-              ✧ <span>Explorar ideias</span>
+              <div class="suggestion-icon">✧</div>
+              <div class="suggestion-text">
+                <strong>Explorar ideias</strong>
+                <small>Descubra novas possibilidades</small>
+              </div>
+              <span class="suggestion-arrow">↗</span>
             </button>
+
           </div>
         </div>
 
@@ -95,14 +170,25 @@
 
       <form id="chatForm" class="composer">
         <div class="composer-box">
-          <textarea id="prompt" rows="1" placeholder="Pergunte qualquer coisa à Pica Pau IA..." required></textarea>
+
+          <textarea
+            id="prompt"
+            rows="1"
+            placeholder="Pergunte qualquer coisa à Pica Pau IA..."
+            required></textarea>
+
           <div class="composer-bottom">
-            <span>🐦 Sua criatividade não tem limites</span>
-            <button id="send" type="submit">↑</button>
+            <span>✦ Inteligência para suas ideias</span>
+            <button id="send" type="submit" aria-label="Enviar mensagem">↑</button>
           </div>
+
         </div>
-        <p class="disclaimer">A Pica Pau IA pode cometer erros. Confira informações importantes.</p>
+
+        <p class="disclaimer">
+          A Pica Pau IA pode cometer erros. Confira informações importantes.
+        </p>
       </form>
+
     </main>
   </div>
 
