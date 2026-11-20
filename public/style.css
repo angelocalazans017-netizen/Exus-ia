@@ -724,3 +724,135 @@ textarea::placeholder {
     display: block;
   }
   }
+
+.owner-status {
+  text-align: right;
+  color: #c5a5ff;
+  font-size: 11px;
+  padding: 5px 20px;
+}
+
+.mode-label {
+  color: #c5a5ff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: rgba(157, 105, 240, .13);
+}
+
+.owner-panel-button {
+  background: linear-gradient(120deg, #8c5bd5, #57319a);
+  border: 1px solid #b28aff;
+  color: white;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.owner-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, .78);
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.owner-panel-content {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #110e1c;
+  border: 1px solid rgba(177, 138, 255, .4);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 0 50px rgba(130, 80, 220, .2);
+}
+
+.owner-heading {
+  font-size: 21px;
+  font-weight: 800;
+  color: #c5a5ff;
+}
+
+.owner-subtitle {
+  color: #898198;
+  font-size: 11px;
+  margin: 7px 0 20px;
+}
+
+.owner-close {
+  float: right;
+  background: #211a30;
+  color: white;
+  border: 1px solid #493765;
+  border-radius: 8px;
+  padding: 7px 10px;
+}
+
+.owner-card {
+  background: #1a1527;
+  border: 1px solid rgba(177, 138, 255, .16);
+  padding: 15px;
+  border-radius: 13px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.owner-card p {
+  color: #a69bb9;
+  margin-top: 7px;
+  font-size: 11px;
+}
+
+.owner-tag {
+  display: inline-block;
+  margin-top: 10px;
+  color: #c5a5ff;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.owner-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 13px;
+  color: #c5a5ff;
+  font-size: 12px;
+}
+
+.owner-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid #30263f;
+  padding: 12px 0;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+
+.owner-user button {
+  flex-shrink: 0;
+  background: #342044;
+  border: 1px solid #74509b;
+  color: white;
+  border-radius: 8px;
+  padding: 7px 9px;
+  font-size: 10px;
+}
+
+.owner-note {
+  color: #81778f;
+  font-size: 10px;
+  line-height: 1.6;
+  margin-top: 15px;
+}
