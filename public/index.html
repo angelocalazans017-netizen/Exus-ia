@@ -5,36 +5,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090811">
-  <meta name="description" content="Exus IA — seu espaço de inteligência e criatividade.">
-  <title>Exus IA — Inteligência sem limites</title>
+  <title>Exus IA</title>
   <link rel="stylesheet" href="/style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <div class="app-shell">
     <aside class="sidebar">
-      <a class="brand" href="/" aria-label="Exus IA início">
+      <a class="brand" href="/">
         <div class="brand-mark">✦</div>
         <div class="brand-name">EXUS<span>IA</span><small>INTELLIGENCE</small></div>
       </a>
 
-      <button id="newChat" class="new-chat">
-        <span class="plus">＋</span>
-        <span>Nova conversa</span>
-        <span class="shortcut">↵</span>
-      </button>
+      <button id="newChat" class="new-chat">＋ Nova conversa</button>
 
       <div class="side-section">
         <div class="section-label">ESPAÇO DE TRABALHO</div>
-        <div class="side-link active"><span>✧</span> Assistente</div>
-        <div class="side-link"><span>◷</span> Conversas recentes</div>
+        <div class="side-link active">✧ Assistente</div>
+        <div class="side-link">◷ Conversas recentes</div>
       </div>
 
       <div class="history-area">
         <div class="section-label">HISTÓRICO</div>
-        <div class="history-placeholder">
-          <span class="history-icon">◷</span>
-          <p>Suas conversas aparecerão aqui.</p>
-        </div>
+        <div class="history-placeholder">Suas conversas aparecerão aqui.</div>
       </div>
 
       <div class="sidebar-footer">
@@ -42,36 +35,38 @@
           <div class="account-avatar">E</div>
           <div class="account-info">
             <strong>Exus IA</strong>
-            <span>Assistente inteligente</span>
+            <small>Assistente inteligente</small>
           </div>
-          <span class="account-status"></span>
         </div>
-        <div class="version">EXUS IA <span>•</span> 2.0</div>
       </div>
     </aside>
 
     <main class="main-panel">
       <header class="topbar">
-        <div class="topbar-left">
-          <div class="mobile-brand"><span>✦</span> EXUS IA</div>
-          <div class="breadcrumb">Workspace <span>/</span> <strong>Assistente</strong></div>
-        </div>
+        <div class="mobile-brand">✦ EXUS IA</div>
         <div class="topbar-right">
           <div class="online-status"><span></span> Sistemas online</div>
-          <div class="top-avatar">E</div>
+          <div id="g_id_onload"
+            data-client_id="SEU_GOOGLE_CLIENT_ID"
+            data-callback="handleGoogleLogin">
+          </div>
+          <div class="g_id_signin"
+            data-type="standard"
+            data-theme="filled_black"
+            data-size="medium">
+          </div>
         </div>
       </header>
+
+      <div id="ownerStatus" class="owner-status"></div>
 
       <section id="conversation" class="conversation">
         <div id="welcome" class="welcome">
           <div class="hero-orb">
-            <div class="orb-ring ring-one"></div>
-            <div class="orb-ring ring-two"></div>
             <div class="orb-center">✦</div>
           </div>
 
-          <div class="eyebrow"><span></span> SUA INTELIGÊNCIA ARTIFICIAL</div>
-
+          <div class="eyebrow">SUA INTELIGÊNCIA ARTIFICIAL</div>
           <h1>Grandes ideias<br>começam com <em>uma pergunta.</em></h1>
 
           <p class="welcome-description">
@@ -80,39 +75,16 @@
 
           <div class="suggestion-grid">
             <button class="suggestion-card" data-prompt="Me ajude a criar um jogo no Roblox Studio">
-              <span class="suggestion-icon purple">⌘</span>
-              <span class="suggestion-copy">
-                <strong>Criar um jogo</strong>
-                <small>Transforme ideias em projetos</small>
-              </span>
-              <span class="suggestion-arrow">↗</span>
+              🎮 <span>Criar um jogo</span>
             </button>
-
             <button class="suggestion-card" data-prompt="Crie um site moderno para mim">
-              <span class="suggestion-icon blue">◇</span>
-              <span class="suggestion-copy">
-                <strong>Desenvolver um site</strong>
-                <small>Construa algo incrível</small>
-              </span>
-              <span class="suggestion-arrow">↗</span>
+              ◇ <span>Desenvolver um site</span>
             </button>
-
             <button class="suggestion-card" data-prompt="Me ensine programação do zero">
-              <span class="suggestion-icon pink">⌘</span>
-              <span class="suggestion-copy">
-                <strong>Aprender programação</strong>
-                <small>Aprenda passo a passo</small>
-              </span>
-              <span class="suggestion-arrow">↗</span>
+              ⚡ <span>Aprender programação</span>
             </button>
-
-            <button class="suggestion-card" data-prompt="Me dê ideias criativas para um projeto novo">
-              <span class="suggestion-icon gold">✧</span>
-              <span class="suggestion-copy">
-                <strong>Explorar ideias</strong>
-                <small>Descubra novas possibilidades</small>
-              </span>
-              <span class="suggestion-arrow">↗</span>
+            <button class="suggestion-card" data-prompt="Me dê ideias criativas para um projeto">
+              ✧ <span>Explorar ideias</span>
             </button>
           </div>
         </div>
@@ -124,10 +96,8 @@
         <div class="composer-box">
           <textarea id="prompt" rows="1" placeholder="Pergunte qualquer coisa à Exus IA..." required></textarea>
           <div class="composer-bottom">
-            <div class="composer-hint"><span>✦</span> Sua criatividade não tem limites</div>
-            <button id="send" type="submit" aria-label="Enviar mensagem">
-              <span>↑</span>
-            </button>
+            <span>✦ Sua criatividade não tem limites</span>
+            <button id="send" type="submit">↑</button>
           </div>
         </div>
         <p class="disclaimer">A Exus IA pode cometer erros. Confira informações importantes.</p>
@@ -138,3 +108,4 @@
   <script src="/app.js"></script>
 </body>
 </html>
+,
